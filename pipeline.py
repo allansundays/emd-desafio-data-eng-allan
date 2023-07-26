@@ -3,11 +3,11 @@ import csv
 import pandas as pd
 import os
 from datetime import datetime, timedelta
-from prefect import task, flow, Flow
+from prefect import task, Flow
 import requests
 import csv
 import psycopg2
-import mysql.connector
+# import mysql.connector
 
 # Define a URL da API de onde os dados serão obtidos
 API_URL = "https://dados.mobilidade.rio/gps/brt"
@@ -50,45 +50,38 @@ def save_to_csv(data, filename):
 @task
 def load_to_db(filename):
 
-    # conn = psycopg2.connect(
-    #     host="localhost",
-    #     database="brt",
-    #     user="root",
-    #     password="**********",
-    # )
-        
-    conn = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="************",
-        database="brt",
-        port="3306"
-    )
+    conn = psycopg2.connect(
+            host="localhost",
+            database="brt",
+            user="postgres",
+            password="**********",
+        )
+            
 
-    # Crie uma tabela no MySQL para armazenar os dados se ainda não existir
     create_table_query = """
         CREATE TABLE IF NOT EXISTS brt_data (
-            id INT AUTO_INCREMENT PRIMARY KEY,
+            id SERIAL PRIMARY KEY,
             bus_id VARCHAR(50),
             position TEXT,
             speed FLOAT
         )
     """
+
     with conn.cursor() as cursor:
         cursor.execute(create_table_query)
         conn.commit()
 
-    cursor = conn.cursor()
 
-    df = pd.read_csv(filename)
-    df = df.astype(object).where(pd.notnull(df), None)
-    values = list(df.itertuples(index=False, name=None))
-    sql = """INSERT INTO brt_data (bus_id, position, speed) VALUES (%s, %s, %s)"""
+    with conn.cursor() as cursor:
+        df = pd.read_csv(filename)
+        df = df.astype(object).where(pd.notnull(df), None)
+        values = list(df.itertuples(index=False, name=None))
+        sql = """INSERT INTO brt_data (bus_id, position, speed) VALUES (%s, %s, %s)"""
 
-    cursor.executemany(sql, values)
+        cursor.executemany(sql, values)
 
-    conn.commit()
-    conn.close()
+        conn.commit()
+        conn.close()
 
     # df.to_sql(name="brt_data", con=conn, if_exists="append", index=False)
 
@@ -104,14 +97,4 @@ with Flow("BRT GPS Pipeline") as flow:
 # Execute a pipeline
 flow.run()
 
-# @flow(name="brt")  
-# def fluxo():
-#     data = get_data_from_api()
-#     processed_data = process_data(data)
-#     save_to_csv(processed_data, 'brt_data.csv')
-#     load_to_mysql('brt_data.csv')
 
-# # Execute a pipeline
-# if __name__ == "__main__":
-#     # Call a flow function for a local flow run!
-#     fluxo()
