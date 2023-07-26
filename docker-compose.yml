@@ -1,0 +1,16 @@
+version: '3'
+services:
+  prefect-server:
+    image: prefecthq/server:latest
+    environment:
+      - PREFECT_SERVER__GRAPHQL_ENABLED=true
+    ports:
+      - "8080:8080"
+    volumes:
+      - /tmp/prefect:/root/.prefect
+
+  prefect-graphql:
+    image: prefecthq/server:0.15.9
+    command: server graphql
+    ports:
+      - "4200:4200"
