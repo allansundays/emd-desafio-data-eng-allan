@@ -41,3 +41,34 @@ A pipeline deverá ser construída subindo uma instância local do Prefect (em P
 
 Fale conosco pelo e-mail que foi utilizado para o envio desse desafio.
 
+## Configuração do ambiente de execução
+
+
+## Executando a pipeline manualmente
+
+- Crie um ambiente virtual 
+```
+python -m venv env
+ ```
+
+- ative o ambiente virtual 
+```
+env\scripts\activate
+ ```
+- Instale as dependências
+```
+pip install -r requirements.txt
+ ```
+- Execute o arquivo `pipeline.py`:
+```
+python pipeline.py
+```
+
+### Rodando via Docker
+
+```
+docker-compose up -d
+```
+
+
+

@@ -1,16 +1,12 @@
 version: '3'
-services:
-  prefect-server:
-    image: prefecthq/server:latest
-    environment:
-      - PREFECT_SERVER__GRAPHQL_ENABLED=true
-    ports:
-      - "8080:8080"
-    volumes:
-      - /tmp/prefect:/root/.prefect
 
-  prefect-graphql:
-    image: prefecthq/server:0.15.9
-    command: server graphql
+services:
+  db:
+    image: imagem_brt:v1.0
+    environment:
+      POSTGRES_DB: brt
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: senha
     ports:
-      - "4200:4200"
+      - "5432:5432"
+    restart: always

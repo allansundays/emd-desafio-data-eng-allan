@@ -1,0 +1,13 @@
+[server]
+auth_token = ""  # Configuração do token de autenticação
+host = "0.0.0.0"              # Endereço IP no qual o servidor irá escutar (0.0.0.0 para escutar em todas as interfaces)
+port = 8080                   # Porta na qual o servidor irá escutar
+
+[database]
+backend = "postgres"          # Backend do banco de dados (postgres, mysql, sqlite)
+username = "postgres"         # Nome de usuário do banco de dados
+password = "*******"      # Senha do banco de dados
+host = "postgres"             # Endereço do host do banco de dados (use "postgres" se estiver usando um serviço com o mesmo nome definido no docker-compose.yml)
+port = 5432                   # Porta do banco de dados
+database = "brt"              # Nome do banco de dados que o Prefect Server usará
+   
